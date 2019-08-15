@@ -59,19 +59,18 @@ class linked_list
                              temp->ptr=head;
                              head=temp;
                              }
-                  int DelFirst()
+                  void DelFirst()
                             {
                              if(head==NULL)
-                               return -1;
+                               cout<<"-1"<<endl;
                              else{
                                   struct node *temp;
                                   temp=head;
                                   head=head->ptr;
                                   free(temp);
-                                  return 0;
                                   }
                              }
-                  int Del(int x,int y)
+                  void Del(int x,int y)
                             {
                              point a;
                              a.set_value(x,y);
@@ -86,31 +85,38 @@ class linked_list
                                       temp=temp->ptr;
                                    }
                              if(temp==NULL)
-                                return -1;
+                                cout<<"-1"<<endl;
                              else if(prev==NULL)
                                    {
                                     head=head->ptr;
                                     free(temp);
-                                    return 0;
                                     }
                              else{
                                   prev->ptr=temp->ptr;
                                   free(temp);
-                                  return 0;
                                   }
                              }
                   void Search(float d)
                             {
                              struct node *temp;
                              temp=head;
+			     int count=0;
                              while(temp!=NULL)
                                   {
                         	   if((temp->p).distance_from_origin()<=d)
-                                      (temp->p).print();
+                                      count=count+1;
                                    temp=temp->ptr;
 				   }
+			     if(count==0)
+			       {
+			        cout<<"-1"<<endl;
+			        }
+			      else
+			      {
+			       cout<<count<<endl;
+			       }
                              }
-                  int Search(int x,int y)
+                  void Search(int x,int y)
                             {
                              point a;
                              a.set_value(x,y);
@@ -123,7 +129,14 @@ class linked_list
                                      count=count+1;
                                    temp=temp->ptr;
                                    }
-                             return count;
+			      if(count==0)
+			        {
+			         cout<<"false"<<endl;
+			         }
+			       else
+			         {
+			           cout<<"true"<<endl;
+			          }
                              }
                   int Length()
                             {
@@ -175,20 +188,19 @@ int main()
                 }
              else if(s[i][0]==2)
                 {
-                 cout<<l.DelFirst()<<endl;
+                 l.DelFirst();
                  }
              else if(s[i][0]==3)
                 {
-                 cout<<l.Del(s[i][1],s[i][2])<<endl;
+                 l.Del(s[i][1],s[i][2]);
                  }
              else if(s[i][0]==4)
                  {
                   l.Search(s[i][1]);
-                  cout<<endl;
                   }
              else if(s[i][0]==5)
                 {
-                 cout<<l.Search(s[i][1],s[i][2])<<endl;
+                 l.Search(s[i][1],s[i][2]);
                  }
              else{
                   cout<<l.Length()<<endl;
