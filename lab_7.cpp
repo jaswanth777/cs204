@@ -28,5 +28,6 @@ for(int i=0;i<out.size();i++)
 	cout<<out[i];
 }
       out.clear();
- 		}
+ }
+return 0;
 }
