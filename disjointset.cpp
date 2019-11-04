@@ -1,11 +1,3 @@
-/*DISJOINT SET UNION FIND
-Question
- There are n students and m relationships of the form q p,means that q and p are friends
- our task is to find no. of friends of every student.
- (if two students are not directly friends but they have a mutual friend,then they too become friends)
- */
-
-
 
 #include <bits/stdc++.h>
 
