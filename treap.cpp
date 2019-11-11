@@ -1,126 +1,113 @@
 #include <bits/stdc++.h> 
-using namespace std; 
- 
-struct TreapNode 
-{ 
-    int key, priority; 
-    TreapNode *left, *right; 
-}; 
-  
+using namespace std;
 
-TreapNode *rightRotate(TreapNode *y) 
-{ 
-    TreapNode *x = y->left,  *T2 = x->right; 
-    x->right = y; 
-    y->left = T2; 
-    return x; 
-} 
-  
+class Treap
+{
+public:
+	int key,priority;
+	Treap* left;
+	Treap* right;
+};
 
-TreapNode *leftRotate(TreapNode *x) 
-{ 
-    TreapNode *y = x->right, *T2 = y->left; 
-  
-   
-    y->left = x; 
-    x->right = T2;  
-    return y; 
-} 
-  
-TreapNode* newNode(int key) 
-{ 
-    TreapNode* temp = new TreapNode; 
-    temp->key = key; 
-    temp->priority = rand()%100; 
-    temp->left = temp->right = NULL; 
-    return temp; 
-} 
+Treap* rr(Treap* y)
+{
+	Treap* x = y->left;
+	Treap* z = x->right;
+	y->left = z;
+	x->right = y;
+	return x;
+}
 
-TreapNode* search(TreapNode* root, int key) 
-{ 
+Treap* ll(Treap* y)
+{
+	Treap* x = y->right;
+	Treap* z = x->left;
+	y->right = z;
+	x->left = y;
+	return x;
+}
 
-    if (root == NULL || root->key == key) 
-       return root; 
-  
+Treap* newnode(int key)
+{
+	Treap* node = new Treap();
+	node->key=key;
+	node->priority = rand()%100;
+	node->left= node->right = NULL;
+	return node;
+}
 
-    if (root->key < key) 
-       return search(root->right, key); 
+Treap* search(Treap* root, int key)
+{
+	if(root==NULL||root->key == key)
+		return root;
+	else if(root->key<key)
+		return search(root->right,key);
+	else
+		return search(root->left,key);
+}
 
-    return search(root->left, key); 
-} 
-  
+Treap* insert(Treap* root, int key)
+{
+	if(!root)
+		return newnode(key);
+	if(key<root->key)
+	{
+		root->left = insert(root->left,key);
+		if(root->left->priority>root->priority)
+			root = rr(root);
+	}
+	if(key>root->key)
+	{
+		root->right = insert(root->right,key);
+		if(root->right->priority>root->priority)
+			root = ll(root);
+	}
+	return root;
+}
 
-TreapNode* insert(TreapNode* root, int key) 
-{ 
-    
-    if (!root) 
-        return newNode(key); 
-  
-    if (key <= root->key) 
-    { 
-       
-        root->left = insert(root->left, key); 
+Treap* deleten(Treap* root , int key)
+{
+	if(root==NULL){
+		cout<<"This node is not presesnt\n";
+		return root;
+	}
+	if(key<root->key)
+		root->left = deleten(root->left,key);
+	else if(key>root->key)
+		root->right = deleten(root->right,key);
+	else if(root->left == NULL)
+	{
+		Treap* z = root->right;
+		delete(root);
+		root = z;
+		cout<<"Dleted Sucessfully\n";
+	}
+	else if(root->right == NULL)
+	{
+		Treap* z = root->left;
+		delete(root);
+		root = z;
+		cout<<"Dleted Sucessfully\n";
+	}
+	else if(root->left->priority<root->right->priority)
+	{ 
+		root = ll(root);
+		root->left = deleten(root->left,key);
+	}
+	else
+	{
+		root = rr(root);
+		root->right = deleten(root->right,key);
+	}
+	return root;
+}
 
-        if (root->left->priority > root->priority) 
-            root = rightRotate(root); 
-    } 
-    else 
-    { 
-        
-        root->right = insert(root->right, key); 
-   
-        if (root->right->priority > root->priority) 
-            root = leftRotate(root); 
-    } 
-    return root; 
-} 
-
-TreapNode* deleteNode(TreapNode* root, int key) 
-{ 
-    if (root == NULL) 
-        return root; 
-  
-    if (key < root->key) 
-        root->left = deleteNode(root->left, key); 
-    else if (key > root->key) 
-        root->right = deleteNode(root->right, key); 
-  
-    
-    else if (root->left == NULL) 
-    { 
-        TreapNode *temp = root->right; 
-        delete(root); 
-        root = temp; 
-    } 
-  
-
-    else if (root->right == NULL) 
-    { 
-        TreapNode *temp = root->left; 
-        delete(root); 
-        root = temp;
-    } 
-  
-    
-    else if (root->left->priority < root->right->priority) 
-    { 
-        root = leftRotate(root); 
-        root->left = deleteNode(root->left, key); 
-    } 
-    else
-    { 
-        root = rightRotate(root); 
-        root->right = deleteNode(root->right, key); 
-    } 
-  
-    return root; 
-} 
-void inorder(TreapNode* root) 
+void inorder(Treap* root) 
 { 
     if (root) 
     { 
         inorder(root->left); 
-        cout << "key: "<< root->key << " | priority: %d "
+        cout << "key: "<< root->key << " | priority:  "
             << root->priority; 
         if (root->left) 
             cout << " | left child: " << root->left->key; 
@@ -130,42 +117,38 @@ void inorder(TreapNode* root)
         inorder(root->right); 
     } 
 } 
-  
-  
-int main() 
-{ 
-    srand(time(NULL)); 
-  
-    struct TreapNode *root = NULL; 
-    root = insert(root, 50); 
-    root = insert(root, 30); 
-    root = insert(root, 20); 
-    root = insert(root, 40); 
-    root = insert(root, 70); 
-    root = insert(root, 60); 
-    root = insert(root, 80); 
-  
-    cout << "Inorder traversal of the given tree \n"; 
-    inorder(root); 
-  
-    cout << "\nDelete 20\n"; 
-    root = deleteNode(root, 20); 
-    cout << "Inorder traversal of the modified tree \n"; 
-    inorder(root); 
-  
-    cout << "\nDelete 30\n"; 
-    root = deleteNode(root, 30); 
-    cout << "Inorder traversal of the modified tree \n"; 
-    inorder(root); 
-  
-    cout << "\nDelete 50\n"; 
-    root = deleteNode(root, 50); 
-    cout << "Inorder traversal of the modified tree \n"; 
-    inorder(root); 
-  
-    TreapNode *res = search(root, 50); 
-    (res == NULL)? cout << "\n50 Not Found ": 
-                   cout << "\n50 found"; 
-  
+
+int main()
+{  
+    struct Treap *root = NULL; 
+    int a=0;
+    while(a!=5)
+    {
+    	cin>>a;
+    	if(a==1)
+    	{
+    		int val;
+    		cin>>val;
+    		root = root = insert(root, val);
+    	}
+    	else if(a==2){
+    		cout << "Inorder traversal of the given tree \n"; 
+   		 	inorder(root); 
+    	}
+    	else if(a==3){
+    		int val;
+    		cin>>val;
+    		root = deleten(root, val);
+    	}
+    	else if(a==4)
+    	{
+    		int val;
+    		cin>>val;
+		    Treap *res = search(root, val); 
+		    (res == NULL)? cout << "\nNot Found ": 
+		                   cout << "\nFound";
+    	}
+
+    }    
     return 0; 
 } 
